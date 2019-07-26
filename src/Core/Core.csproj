@@ -73,6 +73,7 @@
     <Compile Include="Misc\PackageInfo.cs" />
     <Compile Include="Misc\Preconditions.cs" />
     <Compile Include="Misc\Utility.cs" />
+    <Compile Include="Results\RuleIdConverter.cs" />
     <Compile Include="Results\RuleResult.cs" />
     <Compile Include="Results\ScanMetaInfo.cs" />
     <Compile Include="Enums\Framework.cs" />

@@ -27,7 +27,7 @@ namespace Axe.Windows.Core.Results
         /// </summary>
         public ScanStatus Status { get; set; } = ScanStatus.Pass;
 
-        [JsonConverter(typeof(StringEnumConverter))]
+        [JsonConverter(typeof(RuleIdConverter))]
         public RuleId Rule { get; set; }
 
         /// <summary>
