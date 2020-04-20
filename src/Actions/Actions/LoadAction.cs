@@ -7,7 +7,6 @@ using Axe.Windows.Desktop.Settings;
 using Axe.Windows.Telemetry;
 using Newtonsoft.Json;
 using System;
-using System.Drawing;
 using System.IO;
 using System.IO.Packaging;
 using System.Linq;
@@ -36,7 +35,7 @@ namespace Axe.Windows.Actions
                 A11yElement element = A11yElement.FromStream(elementPart);
                 elementPart.Close();
 
-                Bitmap bmp;
+                SkiaSharp.SKBitmap bmp;
                 try
                 {
                     var bmpPart = (from p in parts where p.Uri.OriginalString == "/" + SaveAction.screenshotFileName select p.GetStream()).First();
@@ -64,10 +63,9 @@ namespace Axe.Windows.Actions
         /// </summary>
         /// <param name="stream"></param>
         /// <returns></returns>
-        private static Bitmap LoadBmp(Stream stream)
+        private static SkiaSharp.SKBitmap LoadBmp(Stream stream)
         {
-            Image img = Image.FromStream(stream);
-            return new Bitmap(img);
+            return SkiaSharp.SKBitmap.Decode(stream);
         }
 
         /// <summary>

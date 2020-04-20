@@ -29,7 +29,7 @@ namespace Axe.Windows.ActionsTests.Actions
         public void TestCleanup()
         {
             ScreenShotAction.GetDataManager = () => DataManager.GetDefaultInstance();
-            ScreenShotAction.CreateBitmap = (w, h) => new Bitmap(w, h);
+            ScreenShotAction.CreateBitmap = (w, h) => new SkiaSharp.SKBitmap(w, h);
             ScreenShotAction.CopyFromScreen = ScreenShotAction.DefaultCopyFromScreen;
         }
 

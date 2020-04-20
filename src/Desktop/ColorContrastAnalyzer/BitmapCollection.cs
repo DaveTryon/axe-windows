@@ -6,9 +6,9 @@ namespace Axe.Windows.Desktop.ColorContrastAnalyzer
 
     public class BitmapCollection : ImageCollection
     {
-        private readonly System.Drawing.Bitmap bitmap;
+        private readonly SkiaSharp.SKBitmap bitmap;
 
-        public BitmapCollection(System.Drawing.Bitmap bitmap)
+        public BitmapCollection(SkiaSharp.SKBitmap bitmap)
         {
             this.bitmap = bitmap;
         }
@@ -25,7 +25,7 @@ namespace Axe.Windows.Desktop.ColorContrastAnalyzer
 
         public override Color GetColor(int row, int column)
         {
-            System.Drawing.Color color = bitmap.GetPixel(column, row);
+            SkiaSharp.SKColor color = bitmap.GetPixel(column, row);
 
             return new Color(color);
         }

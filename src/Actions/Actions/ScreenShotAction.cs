@@ -18,9 +18,9 @@ namespace Axe.Windows.Actions
     {
         // unit test hooks
         internal static Func<DataManager> GetDataManager = () => DataManager.GetDefaultInstance();
-        internal static Func<int, int, Bitmap> CreateBitmap = (width, height) => new Bitmap(width, height);
-        internal static readonly Action<Graphics, int, int, Size> DefaultCopyFromScreen = (g, x, y, s) => g.CopyFromScreen(x, y, 0, 0, s);
-        internal static Action<Graphics, int, int, Size> CopyFromScreen = DefaultCopyFromScreen;
+        internal static Func<int, int, SkiaSharp.SKBitmap> CreateBitmap = (width, height) => new SkiaSharp.SKBitmap(width, height);
+        internal static readonly Action<SkiaSharp.SKCanvas, int, int, Size> DefaultCopyFromScreen = TempCopyFromScreen;
+        internal static Action<SkiaSharp.SKCanvas, int, int, Size> CopyFromScreen = DefaultCopyFromScreen;
 
         /// <summary>
         /// Take a screenshot of the given element's parent window, if it has one
@@ -42,11 +42,11 @@ namespace Axe.Windows.Actions
                     return; // no capture. 
                 }
 
-                Bitmap bmp = CreateBitmap(rect.Width, rect.Height);
-                Graphics g = Graphics.FromImage(bmp);
-
-                CopyFromScreen(g, rect.X, rect.Y, rect.Size);
-
+                SkiaSharp.SKBitmap bmp = CreateBitmap(rect.Width, rect.Height);
+                using (SkiaSharp.SKCanvas canvas = new SkiaSharp.SKCanvas(bmp))
+                {
+                    CopyFromScreen(canvas, rect.X, rect.Y, rect.Size);
+                }
                 ec.DataContext.Screenshot = bmp;
                 ec.DataContext.ScreenshotElementId = el.UniqueId;
             }
@@ -56,6 +56,12 @@ namespace Axe.Windows.Actions
                 // silently ignore. since it happens only on WCOS.
                 // in this case, the results file will be loaded with yellow box.
             }
+        }
+
+        private static void TempCopyFromScreen(SkiaSharp.SKCanvas canvas, int x, int y, Size size)
+        {
+            // For now, just return a yellow background
+            canvas.DrawColor(new SkiaSharp.SKColor(255, 255, 0));
         }
     }
 }

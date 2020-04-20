@@ -151,7 +151,7 @@ namespace Axe.Windows.Actions
         /// </summary>
         /// <param name="ecId"></param>
         /// <returns></returns>
-        public Bitmap GetScreenshot(Guid ecId)
+        public SkiaSharp.SKBitmap GetScreenshot(Guid ecId)
         {
             var elementContext = GetElementContext(ecId);
             if (elementContext == null) return null;

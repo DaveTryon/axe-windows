@@ -57,9 +57,9 @@ namespace Axe.Windows.Desktop.ColorContrastAnalyzer
             else throw new DequeColorException(ErrorMessages.InvalidColor);
         }
 
-        public Color(System.Drawing.Color color) : this(color.R, color.G, color.B)
+        public Color(SkiaSharp.SKColor color) : this(color.Red, color.Green, color.Blue)
         {
-            if (color.A < 255)
+            if (color.Alpha < 255)
             {
                 throw new DequeColorException(ErrorMessages.DequeOpaqueColors);
             }

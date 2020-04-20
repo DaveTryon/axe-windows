@@ -52,7 +52,7 @@ namespace Axe.Windows.Actions.Contexts
         /// <summary>
         /// Current screenshot
         /// </summary>
-        public Bitmap Screenshot { get; internal set; }
+        public SkiaSharp.SKBitmap Screenshot { get; internal set; }
 
         /// <summary>
         /// Id of element which was used to grab the screenshot

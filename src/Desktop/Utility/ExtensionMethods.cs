@@ -7,10 +7,9 @@ using Axe.Windows.Desktop.UIAutomation;
 using Axe.Windows.Telemetry;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
-using System.Linq;
 using System;
 using UIAutomationClient;
+using SkiaSharp;
 
 namespace Axe.Windows.Desktop.Utility
 {
@@ -81,29 +80,6 @@ namespace Axe.Windows.Desktop.Utility
             }
 
             return list;
-        }
-
-        /// <summary>
-        /// Capture the bitmap of the given element
-        /// </summary>
-        /// <param name="e"></param>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <param name="width"></param>
-        /// <param name="height"></param>
-        /// <returns></returns>
-        public static Bitmap CaptureBitmap(this A11yElement e)
-        {
-            if (e == null) throw new ArgumentNullException(nameof(e));
-
-            var rect = e.BoundingRectangle;
-
-            Bitmap bmp = new Bitmap(rect.Width, rect.Height);
-            Graphics g = Graphics.FromImage(bmp);
-
-            g.CopyFromScreen(rect.X, rect.Y, 0, 0, rect.Size);
-
-            return bmp; 
         }
 
         /// <summary>

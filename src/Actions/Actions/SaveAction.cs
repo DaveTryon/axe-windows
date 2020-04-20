@@ -63,8 +63,9 @@ namespace Axe.Windows.Actions
             if (ec.DataContext.Screenshot != null)
             {
                 using (MemoryStream mStrm = new MemoryStream())
+                using (SkiaSharp.SKManagedWStream skiaStream = new SkiaSharp.SKManagedWStream(mStrm))
                 {
-                    ec.DataContext.Screenshot.Save(mStrm, System.Drawing.Imaging.ImageFormat.Png);
+                    ec.DataContext.Screenshot.PeekPixels().Encode(skiaStream, SkiaSharp.SKPngEncoderOptions.Default);
                     mStrm.Seek(0, SeekOrigin.Begin);
 
                     AddStream(package, mStrm, screenshotFileName);
