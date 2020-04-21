@@ -7,7 +7,6 @@ using Axe.Windows.Telemetry;
 using Axe.Windows.Win32;
 using System;
 using System.Drawing;
-using System.Runtime.CompilerServices;
 
 namespace Axe.Windows.Actions
 {
@@ -96,7 +95,7 @@ namespace Axe.Windows.Actions
 
                 // copy from source to destination
                 DrawText(canvas, "Calling BitBlt", ref yText);
-                var b = NativeMethods.BitBlt(targetDC, 0, 0, width, height, sourceDC, x, y, Win32.TernaryRasterOperations.SRCCOPY);
+                var b = NativeMethods.BitBlt(targetDC, 0, 0, width, height, sourceDC, x, y, TernaryRasterOperations.SRCCOPY);
                 DrawText(canvas, string.Format("BitBlt returned = {0}", b), ref yText);
 
                 // create the info structure
@@ -111,7 +110,7 @@ namespace Axe.Windows.Actions
 
                 // read the raw pixels into the pixmap for the image
                 DrawText(canvas, "Calling GetDIBits", ref yText);
-                var t = NativeMethods.GetDIBits(targetDC, compatibleBitmapHandle, 0, height, pixmap.GetPixels(), bmi, Win32.DIB_Color_Mode.DIB_RGB_COLORS);
+                var t = NativeMethods.GetDIBits(targetDC, compatibleBitmapHandle, 0, height, pixmap.GetPixels(), bmi, DIB_Color_Mode.DIB_RGB_COLORS);
                 DrawText(canvas, string.Format("GetDIBits returned = {0}", t), ref yText);
 
                 int xMiddle = x + width / 2;
