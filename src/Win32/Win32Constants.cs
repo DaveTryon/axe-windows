@@ -1,5 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
 namespace Axe.Windows.Win32
 {
     /// <summary>
@@ -11,5 +12,6 @@ namespace Axe.Windows.Win32
         public const int GWL_EXSTYLE = -20;
 
         public const int S_OK = 0;
+        public const int RASTERCAPS = 38;
     }
 }
