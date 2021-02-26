@@ -16,7 +16,7 @@ namespace Axe.Windows.RulesTest.PropertyConditions
 
         public ElementGroupsTests()
         {
-            this.AllowSameNameAndControlTypeTypes = new int[]{ AppBar, Custom, Header, MenuBar, SemanticZoom, StatusBar, TitleBar, Text };
+            this.AllowSameNameAndControlTypeTypes = new int[] { AppBar, Custom, Header, MenuBar, SemanticZoom, StatusBar, TitleBar, Text };
             this.DisallowSameNameAndControlTypeTypes = ControlType.All.Difference(AllowSameNameAndControlTypeTypes);
         }
 
@@ -60,6 +60,42 @@ namespace Axe.Windows.RulesTest.PropertyConditions
             e.Name += "1";
 
             Assert.IsTrue(ElementGroups.AllowSameNameAndControlType.Matches(e));
+        }
+
+        [TestMethod]
+        public void AllowSameNameAndControlType_True_EdgeEdit()
+        {
+            var e = new MockA11yElement();
+            e.ControlTypeId = Edit;
+            e.Framework = Core.Enums.FrameworkId.Edge;
+
+            Assert.IsFalse(ElementGroups.AllowSameNameAndControlType.Matches(e));
+
+            string[] allowedLocalizedControlTypes = { "password", "email" };
+
+            foreach (var lct in allowedLocalizedControlTypes)
+            {
+                e.LocalizedControlType = lct;
+                Assert.IsTrue(ElementGroups.AllowSameNameAndControlType.Matches(e));
+            } // for each type
+        }
+
+        [TestMethod]
+        public void AllowSameNameAndControlType_False_EditButNotEdge()
+        {
+            var e = new MockA11yElement();
+            e.ControlTypeId = Edit;
+            e.LocalizedControlType = "password";
+            Assert.IsFalse(ElementGroups.AllowSameNameAndControlType.Matches(e));
+        }
+
+        [TestMethod]
+        public void AllowSameNameAndControlType_False_EdgeButNotEdit()
+        {
+            var e = new MockA11yElement();
+            e.Framework = Core.Enums.FrameworkId.Edge;
+            e.LocalizedControlType = "password";
+            Assert.IsFalse(ElementGroups.AllowSameNameAndControlType.Matches(e));
         }
 
         [TestMethod]
@@ -198,6 +234,24 @@ namespace Axe.Windows.RulesTest.PropertyConditions
                 e.Parent = parent;
 
                 Assert.IsFalse(ElementGroups.WPFScrollBarPageButtons.Matches(e));
+            } // using
+        }
+
+        [TestMethod]
+        public void WPFDataGridCell_MatchExpected()
+        {
+            using (var e = new MockA11yElement())
+            {
+                Assert.IsFalse(ElementGroups.WPFDataGridCell.Matches(e));
+
+                e.Framework = "WPF";
+                Assert.IsFalse(ElementGroups.WPFDataGridCell.Matches(e));
+
+                e.ClassName = "DataGridCell";
+                Assert.IsTrue(ElementGroups.WPFDataGridCell.Matches(e));
+
+                e.Framework = string.Empty;
+                Assert.IsFalse(ElementGroups.WPFDataGridCell.Matches(e));
             } // using
         }
     } // class

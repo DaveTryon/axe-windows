@@ -18,7 +18,7 @@ namespace Axe.Windows.RulesTest.Library
         {
             var e = new MockA11yElement();
             e.SizeOfSet = 1;
-            Assert.AreEqual(EvaluationCode.Error, Rule.Evaluate(e));
+            Assert.IsFalse(Rule.PassesTest(e));
         }
 
         [TestMethod]
@@ -26,14 +26,14 @@ namespace Axe.Windows.RulesTest.Library
         {
             var e = new MockA11yElement();
             e.PositionInSet = 1;
-            Assert.AreEqual(EvaluationCode.Error, Rule.Evaluate(e));
+            Assert.IsFalse(Rule.PassesTest(e));
         }
 
         [TestMethod]
         public void TestControlShouldSupportSetInfoXAMLBothNonExistFail()
         {
             var e = new MockA11yElement();
-            Assert.AreEqual(EvaluationCode.Error, Rule.Evaluate(e));
+            Assert.IsFalse(Rule.PassesTest(e));
         }
 
         [TestMethod]
@@ -42,7 +42,7 @@ namespace Axe.Windows.RulesTest.Library
             var e = new MockA11yElement();
             e.PositionInSet = 1;
             e.SizeOfSet = 1;
-            Assert.AreEqual(EvaluationCode.Pass, Rule.Evaluate(e));
+            Assert.IsTrue(Rule.PassesTest(e));
         }
 
         [TestMethod]
@@ -52,7 +52,7 @@ namespace Axe.Windows.RulesTest.Library
             IEnumerable<int> unexpectedControlTypes = ControlType.All.Difference(expectedControlTypes);
 
             var e = new MockA11yElement();
-            e.Framework = Framework.XAML;
+            e.Framework = FrameworkId.XAML;
 
             foreach (var ct in expectedControlTypes)
             {
@@ -70,8 +70,8 @@ namespace Axe.Windows.RulesTest.Library
         [TestMethod]
         public void TestControlShouldSupportSetInfoXAMLExpectedPlatform()
         {
-            string[] expectedFrameworks = { Framework.XAML };
-            string[] unexpectedFrameworks = { Framework.DirectUI, Framework.Edge, Framework.InternetExplorer, Framework.Win32, Framework.WinForm, Framework.WPF };
+            string[] expectedFrameworks = { FrameworkId.XAML };
+            string[] unexpectedFrameworks = { FrameworkId.DirectUI, FrameworkId.Edge, FrameworkId.InternetExplorer, FrameworkId.Win32, FrameworkId.WinForm, FrameworkId.WPF };
 
             var e = new MockA11yElement();
             e.ControlTypeId = ControlType.ListItem;

@@ -151,11 +151,20 @@ namespace Axe.Windows.Rules.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No control type entry was found in dictionary.
+        ///   Looks up a localized string similar to No control type entry was found in dictionary. Key value = {0}.
         /// </summary>
         internal static string NoControlTypeEntryFound {
             get {
                 return ResourceManager.GetString("NoControlTypeEntryFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Based on the Rule.Condition match, there should have been at least one element found in the PassesTest method of {0}.
+        /// </summary>
+        internal static string NoElementFound {
+            get {
+                return ResourceManager.GetString("NoElementFound", resourceCulture);
             }
         }
         

@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using EvaluationCode = Axe.Windows.Rules.EvaluationCode;
+using System.Linq;
 
 namespace Axe.Windows.RulesTest.Library
 {
@@ -10,54 +10,104 @@ namespace Axe.Windows.RulesTest.Library
     {
         private Axe.Windows.Rules.IRule Rule = new Axe.Windows.Rules.Library.LocalizedControlTypeIsNotCustom();
 
-        [TestMethod]
-        public void TestControlTypeIdIsNotCustomControl()
-        {
-            var e = new MockA11yElement();
-            e.ControlTypeId = Axe.Windows.Core.Types.ControlType.UIA_AppBarControlTypeId;
-
-            Assert.IsFalse(this.Rule.Condition.Matches(e));
-        }
-
-        [TestMethod]
-        public void TestControlTypeIdIsCustomControl()
+        private MockA11yElement CreateElementExpectedToMatchCondition()
         {
             var e = new MockA11yElement();
             e.ControlTypeId = Axe.Windows.Core.Types.ControlType.UIA_CustomControlTypeId;
-            e.LocalizedControlType = " ";
+            e.LocalizedControlType = "non-empty string";
             e.IsKeyboardFocusable = true;
+
+            return e;
+        }
+
+        [TestMethod]
+        public void ExpectedElementMatches()
+        {
+            var e = CreateElementExpectedToMatchCondition();
 
             Assert.IsTrue(this.Rule.Condition.Matches(e));
         }
 
         [TestMethod]
-        public void TestControlTypeIdIsCustomControlButNotFocusable()
+        public void ElementNotCustomControlType()
         {
-            var e = new MockA11yElement();
-            e.ControlTypeId = Axe.Windows.Core.Types.ControlType.UIA_CustomControlTypeId;
-            e.LocalizedControlType = " ";
+            var e = CreateElementExpectedToMatchCondition();
+
+            int[] custom = { ControlType.Custom };
+            foreach (var ct in ControlType.All.
+                Except(custom))
+            {
+                e.ControlTypeId = ct;
+                Assert.IsFalse(this.Rule.Condition.Matches(e));
+            }
+        }
+
+        [TestMethod]
+        public void ElementNotFocusable()
+        {
+            var e = CreateElementExpectedToMatchCondition();
+            e.IsKeyboardFocusable = false;
 
             Assert.IsFalse(this.Rule.Condition.Matches(e));
         }
 
         [TestMethod]
-        public void TestControlTypeIdIsCustomControlAndLocalizedControlTypeIsCustom()
+        public void ElementLocalizedControlTypeEmpty()
         {
-            var e = new MockA11yElement();
-            e.ControlTypeId = Axe.Windows.Core.Types.ControlType.UIA_CustomControlTypeId;
-            e.LocalizedControlType = "custom";
+            var e = CreateElementExpectedToMatchCondition();
+            e.LocalizedControlType = string.Empty;
 
-            Assert.AreEqual(EvaluationCode.Error, this.Rule.Evaluate(e));
+            Assert.IsFalse(this.Rule.Condition.Matches(e));
         }
 
         [TestMethod]
-        public void TestControlTypeIdIsCustomControlAndLocalizedControlTypeIsNotCustom()
+        public void ElementLocalizedControlTypeNull()
+        {
+            var e = CreateElementExpectedToMatchCondition();
+            e.LocalizedControlType = null;
+
+            Assert.IsFalse(this.Rule.Condition.Matches(e));
+        }
+
+        [TestMethod]
+        public void ElementIsDataGridDetailsPresenter()
+        {
+            var parent = new MockA11yElement();
+            parent.ControlTypeId = ControlType.DataItem;
+
+            var e = CreateElementExpectedToMatchCondition();
+            e.ClassName = "DataGridDetailsPresenter";
+            e.Parent = parent;
+
+            Assert.IsFalse(this.Rule.Condition.Matches(e));
+        }
+
+        [TestMethod]
+        public void ElementIsWPFDataGridCell()
+        {
+            var e = CreateElementExpectedToMatchCondition();
+            e.ClassName = "DataGridCell";
+            e.Framework = Core.Enums.FrameworkId.WPF;
+
+            Assert.IsFalse(this.Rule.Condition.Matches(e));
+        }
+
+        [TestMethod]
+        public void LocalizedControlTypeIsCustom()
         {
             var e = new MockA11yElement();
-            e.ControlTypeId = Axe.Windows.Core.Types.ControlType.UIA_CustomControlTypeId;
+            e.LocalizedControlType = "custom";
+
+            Assert.IsFalse(Rule.PassesTest(e));
+        }
+
+        [TestMethod]
+        public void LocalizedControlTypeIsNotCustomTest()
+        {
+            var e = new MockA11yElement();
             e.LocalizedControlType = "not custom";
 
-            Assert.AreEqual(EvaluationCode.Pass, this.Rule.Evaluate(e));
+            Assert.IsTrue(Rule.PassesTest(e));
         }
     } // class
 } // LocalizedControlTypespace

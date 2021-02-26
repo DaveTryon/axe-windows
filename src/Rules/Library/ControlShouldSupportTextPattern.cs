@@ -7,6 +7,7 @@ using Axe.Windows.Rules.PropertyConditions;
 using Axe.Windows.Rules.Resources;
 using static Axe.Windows.Rules.PropertyConditions.BoolProperties;
 using static Axe.Windows.Rules.PropertyConditions.ControlType;
+using static Axe.Windows.Rules.PropertyConditions.Framework;
 
 namespace Axe.Windows.Rules.Library
 {
@@ -18,19 +19,20 @@ namespace Axe.Windows.Rules.Library
             this.Info.Description = Descriptions.ControlShouldSupportTextPattern;
             this.Info.HowToFix = HowToFix.ControlShouldSupportTextPattern;
             this.Info.Standard = A11yCriteriaId.AvailableActions;
+            this.Info.ErrorCode = EvaluationCode.Error;
         }
 
-        public override EvaluationCode Evaluate(IA11yElement e)
+        public override bool PassesTest(IA11yElement e)
         {
             if (e == null) throw new ArgumentNullException(nameof(e));
 
-            return Patterns.Text.Matches(e) ? EvaluationCode.Pass : EvaluationCode.Error;
+            return Patterns.Text.Matches(e);
         }
 
         protected override Condition CreateCondition()
         {
-            var win32Edit = Edit & StringProperties.Framework.Is(Framework.Win32);
-            var nonfocusableDirectUIEdit = Edit & ~IsKeyboardFocusable & StringProperties.Framework.Is(Framework.DirectUI);
+            var win32Edit = Edit & Win32Framework;
+            var nonfocusableDirectUIEdit = Edit & ~IsKeyboardFocusable & DirectUI;
 
             return Document
                 | (Edit

@@ -7,6 +7,7 @@ using Axe.Windows.Rules.Misc;
 using Axe.Windows.Rules.PropertyConditions;
 using Axe.Windows.Rules.Resources;
 using System;
+using System.Globalization;
 using System.Text.RegularExpressions;
 using static Axe.Windows.Rules.PropertyConditions.StringProperties;
 
@@ -21,19 +22,23 @@ namespace Axe.Windows.Rules.Library
             this.Info.HowToFix = HowToFix.NameExcludesControlType;
             this.Info.Standard = A11yCriteriaId.ObjectInformation;
             this.Info.PropertyID = PropertyType.UIA_NamePropertyId;
+            this.Info.ErrorCode = EvaluationCode.Error;
         }
 
-        public override EvaluationCode Evaluate(IA11yElement e)
+        public override bool PassesTest(IA11yElement e)
         {
             if (e == null) throw new ArgumentNullException(nameof(e));
-            if (String.IsNullOrWhiteSpace(e.Name)) throw new ArgumentException(ErrorMessages.ElementNameNullOrWhiteSpace, nameof(e));
+            if (string.IsNullOrWhiteSpace(e.Name)) throw new ArgumentException(ErrorMessages.ElementNameNullOrWhiteSpace, nameof(e));
 
-            if (!ControlTypeStrings.Dictionary.TryGetValue(e.ControlTypeId, out string controlTypeString)) throw new InvalidOperationException(ErrorMessages.NoControlTypeEntryFound);
+            if (!ControlTypeStrings.Dictionary.TryGetValue(e.ControlTypeId, out string controlTypeString))
+            {
+                string exceptionMessage = string.Format(CultureInfo.InvariantCulture, ErrorMessages.NoControlTypeEntryFound, e.ControlTypeId);
+                throw new InvalidOperationException(exceptionMessage);
+            }
 
             var r = new Regex($@"\b{controlTypeString}\b", RegexOptions.IgnoreCase);
 
-            return r.IsMatch(e.Name)
-                ? EvaluationCode.Error : EvaluationCode.Pass;
+            return !r.IsMatch(e.Name);
         }
 
         protected override Condition CreateCondition()

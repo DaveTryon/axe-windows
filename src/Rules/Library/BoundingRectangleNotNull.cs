@@ -6,6 +6,7 @@ using Axe.Windows.Rules.PropertyConditions;
 using Axe.Windows.Rules.Resources;
 using static Axe.Windows.Rules.PropertyConditions.BoolProperties;
 using static Axe.Windows.Rules.PropertyConditions.ElementGroups;
+using static Axe.Windows.Rules.PropertyConditions.Framework;
 
 namespace Axe.Windows.Rules.Library
 {
@@ -18,11 +19,12 @@ namespace Axe.Windows.Rules.Library
             this.Info.PropertyID = Axe.Windows.Core.Types.PropertyType.UIA_BoundingRectanglePropertyId;
             this.Info.Description = Descriptions.BoundingRectangleNotNull;
             this.Info.HowToFix = HowToFix.BoundingRectangleNotNull;
+            this.Info.ErrorCode = EvaluationCode.Error;
         }
 
-        public override EvaluationCode Evaluate(IA11yElement e)
+        public override bool PassesTest(IA11yElement e)
         {
-            return BoundingRectangle.NotNull.Matches(e) ? EvaluationCode.Pass : EvaluationCode.Error;
+            return BoundingRectangle.NotNull.Matches(e);
         }
 
         protected override Condition CreateCondition()
@@ -31,7 +33,7 @@ namespace Axe.Windows.Rules.Library
             var sysmenuitem = ControlType.MenuItem & Relationships.Parent(sysmenubar);
 
             // This exception is meant to apply to the non-Chromium version of Edge
-            var edgeGroups = ControlType.Group & StringProperties.Framework.Is(Framework.Edge);
+            var edgeGroups = ControlType.Group & Edge;
 
             // the Bounding rectangle property might be empty due to
             // a non-existent property, or an invalid data format.

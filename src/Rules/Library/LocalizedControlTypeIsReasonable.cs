@@ -20,13 +20,14 @@ namespace Axe.Windows.Rules.Library
             this.Info.HowToFix = HowToFix.LocalizedControlTypeReasonable;
             this.Info.Standard = A11yCriteriaId.ObjectInformation;
             this.Info.PropertyID = PropertyType.UIA_LocalizedControlTypePropertyId;
+            this.Info.ErrorCode = EvaluationCode.Warning;
         }
 
-        public override EvaluationCode Evaluate(IA11yElement e)
+        public override bool PassesTest(IA11yElement e)
         {
             if (e == null) throw new ArgumentNullException(nameof(e));
 
-            return HasReasonableLocalizedControlType(e) ? EvaluationCode.Pass : EvaluationCode.Warning;
+            return HasReasonableLocalizedControlType(e);
         }
 
         private static bool HasReasonableLocalizedControlType(IA11yElement e)
@@ -35,7 +36,7 @@ namespace Axe.Windows.Rules.Library
 
             if (names == null) throw new InvalidProgramException(ErrorMessages.NoLocalizedControlTypeStringFound);
 
-            return Array.Exists(names, s => String.Compare(e.LocalizedControlType, s, StringComparison.OrdinalIgnoreCase) == 0);
+            return Array.Exists(names, s => string.Compare(e.LocalizedControlType, s, StringComparison.OrdinalIgnoreCase) == 0);
         }
 
         private static string[] GetExpectedLocalizedControlTypeNames(int controlTypeId)

@@ -5,6 +5,7 @@ using Axe.Windows.Core.Misc;
 using Axe.Windows.Core.Types;
 using static Axe.Windows.Rules.PropertyConditions.BoolProperties;
 using static Axe.Windows.Rules.PropertyConditions.ControlType;
+using static Axe.Windows.Rules.PropertyConditions.Framework;
 using static Axe.Windows.Rules.PropertyConditions.Relationships;
 using static Axe.Windows.Rules.PropertyConditions.StringProperties;
 
@@ -17,7 +18,7 @@ namespace Axe.Windows.Rules.PropertyConditions
     static class ElementGroups
     {
         // the following occurs for xaml expand/collapse controls
-        private static Condition FocusableGroup = Group & IsKeyboardFocusable & (StringProperties.Framework.Is(Core.Enums.Framework.WPF) | StringProperties.Framework.Is(Core.Enums.Framework.XAML));
+        private static Condition FocusableGroup = Group & IsKeyboardFocusable & (WPF | XAML);
 
         public static Condition MinMaxCloseButton = CreateMinMaxCloseButtonCondition();
         public static Condition FocusableButton = CreateFocusableButtonCondition();
@@ -34,7 +35,8 @@ namespace Axe.Windows.Rules.PropertyConditions
         public static Condition NameOptional = CreateNameOptionalCondition();
         public static Condition IsControlElementTrueRequired = CreateIsControlRequiredCondition();
         public static Condition IsControlElementTrueOptional = CreateIsControlOptionalCondition();
-        public static Condition EdgeDocument = Pane & StringProperties.Framework.Is(Core.Enums.Framework.Edge) & NotParent(StringProperties.Framework.Is(Core.Enums.Framework.Edge));
+        public static Condition EdgeDocument = Pane & Edge & NotParent(Edge);
+        public static Condition WPFDataGridCell = WPF & StringProperties.ClassName.Is("DataGridCell");
 
         public static Condition AllowSameNameAndControlType = CreateAllowSameNameAndControlTypeCondition();
 
@@ -64,7 +66,7 @@ namespace Axe.Windows.Rules.PropertyConditions
                 | (Button & Parent(SplitButton) & IsDirectUIFramework & AutomationID.Is("Dropdown"));
         }
 
-            private static Condition CreateUnfocusableControlsBasedOnOfficeCondition()
+        private static Condition CreateUnfocusableControlsBasedOnOfficeCondition()
         {
             // the following menu item never gets focus because its child, an edit field, always gets focus
             var quickHelpMenuItem = MenuItem & AutomationID.Is("TellMeControlAnchor");
@@ -110,8 +112,8 @@ namespace Axe.Windows.Rules.PropertyConditions
             ignoreTypes |= (ListItem & Parent(ComboBox)) | Container;
             ignoreTypes |= ExpectedNotToBeFocusable;
 
-            return IsContentOrControlElement 
-                 & BoundingRectangle.Valid 
+            return IsContentOrControlElement
+                 & BoundingRectangle.Valid
                  & ~ignoreTypes
                  & ~UnfocusableControlsBasedOnExplorer
                  & ~UnfocusableControlsBasedOnOffice;
@@ -131,7 +133,7 @@ namespace Axe.Windows.Rules.PropertyConditions
                 | MenuBar | MenuItem | ProgressBar
                 | RadioButton | SemanticZoom | Slider | Spinner
                 | SplitButton | TabItem
-                | Table | allowedText | ToolBar 
+                | Table | allowedText | ToolBar
                 | ToolTip | Tree | TreeItem | Window
                 | trueWhenElementHasSiblingsOfSameType;
         }
@@ -150,7 +152,7 @@ namespace Axe.Windows.Rules.PropertyConditions
         {
             return Button
                 & Parent(ScrollBar)
-                & Framework.Is(Axe.Windows.Core.Enums.Framework.WPF)
+                & WPF
                 & (AutomationID.Is("PageUp")
                 | AutomationID.Is("PageDown")
                 | AutomationID.Is("PageLeft")
@@ -166,14 +168,15 @@ namespace Axe.Windows.Rules.PropertyConditions
 
         private static bool IsParentWPFDataItem(IA11yElement e)
         {
-            return e.GetUIFramework() == Core.Enums.Framework.WPF
+            // GetUIFramework searches the ancestors for a valid framework value in addition to checking the element itself
+            return e.GetUIFramework() == Core.Enums.FrameworkId.WPF
                 && e.Parent != null
                 && e.Parent.ControlTypeId == Axe.Windows.Core.Types.ControlType.UIA_DataItemControlTypeId;
         }
 
         private static bool HasAllowedPlatformPropertiesForText(IA11yElement e)
         {
-            return !IsPlatformWinForms(e)
+            return !WinForms.Matches(e)
                 || !HasStaticEdgeExtendedStyle(e);
         }
 
@@ -186,11 +189,6 @@ namespace Axe.Windows.Rules.PropertyConditions
             return (platformProperty & WS_EX_STATICEDGE) != 0;
         }
 
-        private static bool IsPlatformWinForms(IA11yElement e)
-        {
-            return e?.Framework == Core.Enums.Framework.WinForm;
-        }
-
         private static Condition CreateIsControlRequiredCondition()
         {
             return AppBar | Button | Calendar | CheckBox
@@ -201,7 +199,7 @@ namespace Axe.Windows.Rules.PropertyConditions
                 | ProgressBar | RadioButton | ScrollBar | SemanticZoom
                 | Separator | Slider | Spinner | SplitButton
                 | Tab | TabItem | Table
-                | (Text & ~StringProperties.Framework.Is(Core.Enums.Framework.WPF)) 
+                | (Text & ~WPF)
                 | Thumb | TitleBar | ToolBar
                 | ToolTip | Tree | TreeItem | Window;
         }
@@ -227,7 +225,18 @@ namespace Axe.Windows.Rules.PropertyConditions
 
             var types = AppBar | Custom | Header | MenuBar | SemanticZoom | StatusBar | TitleBar | Text;
 
-            return types | Name.Length > 50;
+            /*
+            For edit controls in Edge prior to Anaheim, the name property for password and e-mail
+            fields will contain "password" and "email" in the LocalizedControlType property.
+            Since this cannot be addressed by users, and because that version of Edge is legacy, such edit fields are allowed.
+            */
+
+            var edgeEdits = Edit
+                & Edge
+                & (LocalizedControlType.IsNoCase("password")
+                | LocalizedControlType.IsNoCase("email"));
+
+            return types | Name.Length > 50 | edgeEdits;
         }
     } // class
 } // namespace
