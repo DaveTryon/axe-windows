@@ -32,7 +32,7 @@ namespace Axe.Windows.DesktopTests.ColorContrastAnalyzer
             Mock<ColorContrastResult> resultMock = new Mock<ColorContrastResult>(MockBehavior.Strict);
             resultMock.Setup(x => x.ConfidenceValue())
                 .Returns(confidence);
-            resultMock.Setup(x => x.MostLikelyColorPair)
+            resultMock.SetupGet(x => x.MostLikelyColorPair)
                 .Returns(colorPair);
 
             return resultMock.Object;
