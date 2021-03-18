@@ -15,7 +15,7 @@ namespace Axe.Windows.Desktop.ColorContrastAnalyzer
         public CachedColorContrastResult(ColorContrastResult result)
         {
             Result = result;
-            MostLikelyColorPair = result.GetMostLikelyColorPair();
+            MostLikelyColorPair = result.MostLikelyColorPair;
             Contrast = MostLikelyColorPair == null ? 0 : MostLikelyColorPair.ColorContrast();
         }
     }
