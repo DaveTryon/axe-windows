@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 using Axe.Windows.Core.Enums;
+using Axe.Windows.Core.Exceptions;
 using Axe.Windows.Core.Misc;
 using Axe.Windows.Core.Results;
 using Axe.Windows.Core.Types;
@@ -418,7 +419,7 @@ namespace Axe.Windows.Core.Bases
         {
             var property = this.PlatformProperties?.ById(propertyId);
             if (property == null) return default(T);
-            if (!(property.Value is T)) throw new Exception(Invariant($"Expected property.Value, which is type {property.Value.GetType().Name}, to be type {typeof(T).Name}"));
+            if (!(property.Value is T)) throw new AxeWindowsException(Invariant($"Expected property.Value, which is type {property.Value.GetType().Name}, to be type {typeof(T).Name}"));
 
             return property.Value;
         }
@@ -570,12 +571,12 @@ namespace Axe.Windows.Core.Bases
         /// <summary>
         /// a collection of patterns supported by the element
         /// </summary>
-        public List<A11yPattern> Patterns { get; set; }
+        public IList<A11yPattern> Patterns { get; set; }
 
         /// <summary>
         /// Child Elements
         /// </summary>
-        public List<A11yElement> Children { get; set; }
+        public IList<A11yElement> Children { get; set; }
 #pragma warning restore CA2227 // Collection properties should be read only
 
         /*
@@ -636,14 +637,6 @@ namespace Axe.Windows.Core.Bases
         /// Returns the display text for the issue.
         /// </summary>
         public string IssueDisplayText { get; set; }
-
-        public ScanResults GetScannerResultInstance()
-        {
-            var srs = new ScanResults();
-            this.ScanResults = srs;
-
-            return srs;
-        }
 
         /// <summary>
         /// Get Property Safely.

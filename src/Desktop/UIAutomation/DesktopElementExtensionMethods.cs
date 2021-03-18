@@ -13,6 +13,7 @@ using UIAutomationClient;
 using System.Runtime.InteropServices;
 using Axe.Windows.Win32;
 using System.Text.RegularExpressions;
+using Axe.Windows.Desktop.Utility;
 
 namespace Axe.Windows.Desktop.UIAutomation
 {
@@ -100,7 +101,7 @@ namespace Axe.Windows.Desktop.UIAutomation
             element.Clear();
             if (element.IsSafeToRefresh())
             {
-                A11yAutomation.GetUIAutomationObject().PollForPotentialSupportedProperties((IUIAutomationElement)element.PlatformObject, out int[] ppids, out string[] ppns);
+                A11yAutomation.UIAutomationObject.PollForPotentialSupportedProperties((IUIAutomationElement)element.PlatformObject, out int[] ppids, out string[] ppns);
 
                 // build a cache based on the lists
                 var cache = DesktopElementHelper.BuildCacheRequest(list, null);
@@ -169,12 +170,8 @@ namespace Axe.Windows.Desktop.UIAutomation
                 element.Properties = null;
             }
 
-            if (element.Patterns != null)
-            {
-                element.Patterns.ForEach(ptn => ptn.Dispose());
-                element.Patterns?.Clear();
-                element.Patterns = null;
-            }
+            ListHelper.DisposeAllItemsAndClearList(element.Patterns);
+            element.Patterns = null;
 
             element.PlatformProperties?.Clear();
             element.PlatformProperties = null;
@@ -243,7 +240,7 @@ namespace Axe.Windows.Desktop.UIAutomation
             try
             {
                 // Get the list of properties to retrieve
-                A11yAutomation.GetUIAutomationObject().PollForPotentialSupportedProperties((IUIAutomationElement)element.PlatformObject, out int[] ppids, out string[] ppns);
+                A11yAutomation.UIAutomationObject.PollForPotentialSupportedProperties((IUIAutomationElement)element.PlatformObject, out int[] ppids, out string[] ppns);
 
                 var ppl = new List<Tuple<int, string>>();
 
@@ -258,7 +255,7 @@ namespace Axe.Windows.Desktop.UIAutomation
                     }
                 }
 
-                A11yAutomation.GetUIAutomationObject().PollForPotentialSupportedPatterns((IUIAutomationElement)element.PlatformObject, out int[] ptids, out string[] ptns);
+                A11yAutomation.UIAutomationObject.PollForPotentialSupportedPatterns((IUIAutomationElement)element.PlatformObject, out int[] ptids, out string[] ptns);
                 var ptl = new List<Tuple<int,string>>();
 
                 for (int i = 0; i < ptids.Length; i++)
@@ -302,8 +299,8 @@ namespace Axe.Windows.Desktop.UIAutomation
                 // release cache interface. 
                 Marshal.ReleaseComObject(cache);
 
-                ppl?.Clear();
-                ptl?.Clear();
+                ppl.Clear();
+                ptl.Clear();
             }
 #pragma warning disable CA1031 // Do not catch general exception types
             catch (Exception e)
@@ -528,7 +525,7 @@ namespace Axe.Windows.Desktop.UIAutomation
             double[] clickablePoint = uiaElement.GetCurrentPropertyValue(id);
             if (clickablePoint == null) return;
 
-            string name = A11yAutomation.GetUIAutomationObject().GetPropertyProgrammaticName(id);
+            string name = A11yAutomation.UIAutomationObject.GetPropertyProgrammaticName(id);
 
             var prop = new A11yProperty
             {

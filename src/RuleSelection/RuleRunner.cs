@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 using Axe.Windows.Core.Bases;
 using Axe.Windows.Core.Enums;
+using Axe.Windows.Core.Exceptions;
 using Axe.Windows.Core.HelpLinks;
 using Axe.Windows.Core.Results;
 using Axe.Windows.Rules;
@@ -105,18 +106,15 @@ namespace Axe.Windows.RuleSelection
             return ScanStatus.Pass;
         }
 
-        public static string GetRuleVersion()
-        {
-            return RuleVersions.Version;
-        }
+        public static string RuleVersion => RuleVersions.Version;
 
         private static Exception Error(string message)
         {
 #if DEBUG
             var callStack = new System.Diagnostics.StackFrame(1, true);
-            return new Exception(Invariant($"{message} in {callStack.GetMethod()} at line {callStack.GetFileLineNumber()} in {callStack.GetFileName()}"));
+            return new AxeWindowsException(Invariant($"{message} in {callStack.GetMethod()} at line {callStack.GetFileLineNumber()} in {callStack.GetFileName()}"));
 #else
-            return new Exception(message);
+            return new AxeWindowsException(message);
 #endif
         }
     } // class
