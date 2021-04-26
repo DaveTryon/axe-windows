@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using CommandLine;
-using System;
 
 namespace AxeWindowsCLI
 {
@@ -29,7 +28,7 @@ namespace AxeWindowsCLI
         [Option(Required = false, HelpText = "How many seconds to delay before triggering the scan. Valid range is 0 to 60 seconds, with a default of 0.")]
         public int DelayInSeconds { get; set; }
 
-        [Option(Required = false, HelpText = "Full path to an assembly that exposes a public implementation of the IBitmapCreator interface for use with this scan.")]
+        [Option(Required = false, HelpText = "The full path to an assembly that exposes a public implementation of the IBitmapCreator interface for use with this scan.")]
         public string ScreenCaptureAssembly { get; set; }
 
         // CommandLineParser will never set this value!

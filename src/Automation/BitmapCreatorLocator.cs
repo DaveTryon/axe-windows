@@ -4,6 +4,7 @@
 using Axe.Windows.SystemAbstractions;
 using System;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 
@@ -20,6 +21,12 @@ namespace Axe.Windows.Automation
         internal static IBitmapCreator GetBitmapCreator(string assemblyName, out int creatorTypeCount)
         {
             creatorTypeCount = 0; // Set this value in case we throw while getting the types
+
+            if (assemblyName != Path.GetFullPath(assemblyName))
+            {
+                throw new ArgumentException("A full path is required when specifying the screen capture assembly",
+                    nameof(assemblyName));
+            }
 
             Assembly assembly = Assembly.LoadFrom(assemblyName);
             Type[] types = assembly.GetTypes();

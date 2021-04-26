@@ -68,6 +68,19 @@ namespace Axe.Windows.AutomationTests
         }
 
         [TestMethod]
+        public void GetBitmapCreator_RelativePathIsSpecified_ThrowsArgumentException()
+        {
+            int creatorTypeCount = Undefined;
+            string path = @".\Axe.Windows.Desktop.dll";
+
+            ArgumentException e = Assert.ThrowsException<ArgumentException>(() => BitmapCreatorLocator.GetBitmapCreator(path, out creatorTypeCount));
+
+            Assert.AreEqual("assemblyName", e.ParamName);
+            Assert.IsTrue(e.Message.StartsWith("A full path is required"));
+            Assert.AreEqual(0, creatorTypeCount);
+        }
+
+        [TestMethod]
         public void GetBitmapCreator_TwoDerivedClassesExist_ThrowsArgumentException()
         {
             int creatorTypeCount = Undefined;
