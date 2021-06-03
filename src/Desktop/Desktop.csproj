@@ -42,6 +42,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="Interop.UIAutomationCore">
+      <HintPath>..\UIAAssemblies\Interop.UIAutomationCore.dll</HintPath>
+      <EmbedInteropTypes>true</EmbedInteropTypes>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Update="Resources\ErrorMessages.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
