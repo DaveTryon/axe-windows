@@ -1,0 +1,17 @@
+﻿<Window x:Class="TrackerTestApp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TrackerTestApp"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800" Topmost="True">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Button x:Name="_clear" Grid.Row="0" Margin="5" Content="Clear" HorizontalAlignment="Left" Click="Clear_Click"/>
+        <ListBox x:Name="_elementList" Grid.Row ="1" VerticalAlignment="Stretch" Height="Auto" />
+    </Grid>
+</Window>

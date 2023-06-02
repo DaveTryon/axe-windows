@@ -36,7 +36,7 @@ namespace Axe.Windows.Actions.Trackers
         /// <summary>
         /// Set the scope of selection
         /// </summary>
-        public SelectionScope Scope { get; internal set; }
+        public SelectionScope Scope { get; set; }
 
         /// <summary>
         /// Constructor
