@@ -11,7 +11,7 @@ namespace ScanAnalyzer
         {
             string lastRuntimeId = string.Empty;
 
-            foreach(ListEntry<string> entry in errorAggregator.GetEntriesIndexedByRuntimeId())
+            foreach(ListEntry<FileNameAndUniqueId> entry in errorAggregator.GetEntriesIndexedByRuntimeId())
             {
                 if (entry.FirstLevelKey != lastRuntimeId)
                 {
@@ -21,7 +21,7 @@ namespace ScanAnalyzer
             }
         }
 
-        private static void CreateSingleTargetedA11yTestFile(ListEntry<string> entry, IOptions options)
+        private static void CreateSingleTargetedA11yTestFile(ListEntry<FileNameAndUniqueId> entry, IOptions options)
         {
             // TODO
         }

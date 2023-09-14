@@ -16,8 +16,8 @@ namespace ScanCommon.A11yTestComparison
     /// </summary>
     public class ErrorAggregator
     {
-        private readonly TwoLevelDictionaryToListOfEntries<string> _indexedByDescriptionFirst = new TwoLevelDictionaryToListOfEntries<string>();
-        private readonly TwoLevelDictionaryToListOfEntries<string> _indexedByRuntimeIdFirst = new TwoLevelDictionaryToListOfEntries<string>();
+        private readonly TwoLevelDictionaryToListOfEntries<FileNameAndUniqueId> _indexedByDescriptionFirst = new TwoLevelDictionaryToListOfEntries<FileNameAndUniqueId>();
+        private readonly TwoLevelDictionaryToListOfEntries<FileNameAndUniqueId> _indexedByRuntimeIdFirst = new TwoLevelDictionaryToListOfEntries<FileNameAndUniqueId>();
 
         public static ErrorAggregator CreateFromStream(Stream elementStream, string a11yTestFile)
         {
@@ -46,8 +46,9 @@ namespace ScanCommon.A11yTestComparison
                 {
                     if (ruleResult.Status == ScanStatus.Fail && element.RuntimeId != null)
                     {
-                        _indexedByDescriptionFirst.AddError(ruleResult.Description, element.RuntimeId, a11yTestFile);
-                        _indexedByRuntimeIdFirst.AddError(element.RuntimeId, ruleResult.Description, a11yTestFile);
+                        FileNameAndUniqueId fileNameAndUniqueId = new FileNameAndUniqueId(a11yTestFile, element.UniqueId);
+                        _indexedByDescriptionFirst.AddError(ruleResult.Description, element.RuntimeId, fileNameAndUniqueId);
+                        _indexedByRuntimeIdFirst.AddError(element.RuntimeId, ruleResult.Description, fileNameAndUniqueId);
                     }
                 }
             }
@@ -59,7 +60,7 @@ namespace ScanCommon.A11yTestComparison
             string lastSecondLevelKey = string.Empty;
 
             Console.WriteLine("Contents by Rule Description");
-            foreach (ListEntry<string> entry in _indexedByDescriptionFirst)
+            foreach (ListEntry<FileNameAndUniqueId> entry in _indexedByDescriptionFirst)
             {
                 if (entry.FirstLevelKey != lastFirstLevelKey)
                 {
@@ -84,7 +85,7 @@ namespace ScanCommon.A11yTestComparison
             string lastSecondLevelKey = string.Empty;
 
             Console.WriteLine("Contents by Runtime ID");
-            foreach (ListEntry<string> entry in _indexedByRuntimeIdFirst)
+            foreach (ListEntry<FileNameAndUniqueId> entry in _indexedByRuntimeIdFirst)
             {
                 if (entry.FirstLevelKey != lastFirstLevelKey)
                 {
@@ -103,9 +104,9 @@ namespace ScanCommon.A11yTestComparison
             }
         }
 
-        public IEnumerable<ListEntry<string>> GetEntriesIndexedByRuntimeId()
+        public IEnumerable<ListEntry<FileNameAndUniqueId>> GetEntriesIndexedByRuntimeId()
         {
-            foreach (ListEntry<string> entry in _indexedByRuntimeIdFirst)
+            foreach (ListEntry<FileNameAndUniqueId> entry in _indexedByRuntimeIdFirst)
             {
                 yield return entry;
             }
