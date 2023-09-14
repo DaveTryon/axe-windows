@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using ScanCommon.A11yTestComparison;
+using System.IO;
 
 namespace ScanAnalyzer
 {
@@ -23,7 +24,10 @@ namespace ScanAnalyzer
 
         private static void CreateSingleTargetedA11yTestFile(ListEntry<FileNameAndUniqueId> entry, IOptions options)
         {
-            // TODO
+            string inputA11yTestFile = entry.Entry.FileName;
+            string outputA11yTestFile = Path.Join(options.OutputDirectory, Path.GetFileName(inputA11yTestFile));
+
+            A11yTestFileContent.CopyFileWithUpdatedMetadata(inputA11yTestFile, outputA11yTestFile, entry.Entry.UniqueId);
         }
     }
 }
