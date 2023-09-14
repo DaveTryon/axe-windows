@@ -6,15 +6,15 @@ using System.Collections.Generic;
 
 namespace ScanCommon.A11yTestComparison
 {
-    public class TwoLevelDictionaryToListOfThings : IEnumerable<TwoLevelDictionaryToListOfThings.Entry>
+    public class TwoLevelDictionaryToListOfThings<T> : IEnumerable<TwoLevelDictionaryToListOfThings<T>.Entry<T>>
     {
-        public class Entry
+        public class Entry<TEntry>
         {
             public string FirstLevelKey { get; }
             public string SecondLevelKey { get; }
-            public string Item { get; }
+            public TEntry Item { get; }
 
-            public Entry(string firstLevelKey, string secondLevelKey, string item)
+            public Entry(string firstLevelKey, string secondLevelKey, TEntry item)
             {
                 FirstLevelKey = firstLevelKey;
                 SecondLevelKey = secondLevelKey;
@@ -22,64 +22,64 @@ namespace ScanCommon.A11yTestComparison
             }
         }
 
-        private readonly Dictionary<string, Dictionary<string, List<string>>> _firstLevelDictionary = new Dictionary<string, Dictionary<string, List<string>>>();
+        private readonly Dictionary<string, Dictionary<string, List<T>>> _firstLevelDictionary = new Dictionary<string, Dictionary<string, List<T>>>();
 
         /// <summary>
         /// Add a string to the dictionary, using the specified keys
         /// </summary>
-        public void AddError(string firstLevelKey, string secondLevelKey, string item)
+        public void AddError(string firstLevelKey, string secondLevelKey, T item)
         {
-            if (!_firstLevelDictionary.TryGetValue(firstLevelKey, out Dictionary<string, List<string>>? secondLevelDictionary))
+            if (!_firstLevelDictionary.TryGetValue(firstLevelKey, out Dictionary<string, List<T>>? secondLevelDictionary))
             {
-                secondLevelDictionary = new Dictionary<string, List<string>>();
+                secondLevelDictionary = new Dictionary<string, List<T>>();
                 _firstLevelDictionary.Add(firstLevelKey, secondLevelDictionary);
             }
 
-            if (!secondLevelDictionary.TryGetValue(secondLevelKey, out List<string>? stringList))
+            if (!secondLevelDictionary.TryGetValue(secondLevelKey, out List<T>? itemList))
             {
-                stringList = new List<string>();
-                secondLevelDictionary.Add(secondLevelKey, stringList);
+                itemList = new List<T>();
+                secondLevelDictionary.Add(secondLevelKey, itemList);
             }
 
-            stringList.Add(item);
+            itemList.Add(item);
         }
 
 
         /// <summary>
         /// Merges another object into this one
         /// </summary>
-        public void Merge(TwoLevelDictionaryToListOfThings other)
+        public void Merge(TwoLevelDictionaryToListOfThings<T> other)
         {
-            foreach (KeyValuePair<string, Dictionary<string, List<string>>> firstLevelPair in other._firstLevelDictionary)
+            foreach (KeyValuePair<string, Dictionary<string, List<T>>> firstLevelPair in other._firstLevelDictionary)
             {
-                if (!_firstLevelDictionary.TryGetValue(firstLevelPair.Key, out Dictionary<string, List<string>>? secondLevelDictionary))
+                if (!_firstLevelDictionary.TryGetValue(firstLevelPair.Key, out Dictionary<string, List<T>>? secondLevelDictionary))
                 {
-                    secondLevelDictionary = new Dictionary<string, List<string>>();
+                    secondLevelDictionary = new Dictionary<string, List<T>>();
                     _firstLevelDictionary.Add(firstLevelPair.Key, secondLevelDictionary);
                 }
 
-                foreach (KeyValuePair<string, List<string>> secondLevelPair in firstLevelPair.Value)
+                foreach (KeyValuePair<string, List<T>> secondLevelPair in firstLevelPair.Value)
                 {
-                    if (!secondLevelDictionary.TryGetValue(secondLevelPair.Key, out List<string>? stringList))
+                    if (!secondLevelDictionary.TryGetValue(secondLevelPair.Key, out List<T>? itemList))
                     {
-                        stringList = new List<string>();
-                        secondLevelDictionary.Add(secondLevelPair.Key, stringList);
+                        itemList = new List<T>();
+                        secondLevelDictionary.Add(secondLevelPair.Key, itemList);
                     }
 
-                    stringList.AddRange(secondLevelPair.Value);
+                    itemList.AddRange(secondLevelPair.Value);
                 }
             }
         }
 
-        public IEnumerator<Entry> GetEnumerator()
+        public IEnumerator<Entry<T>> GetEnumerator()
         {
-            foreach (KeyValuePair<string, Dictionary<string, List<string>>> firstLevelPair in _firstLevelDictionary)
+            foreach (KeyValuePair<string, Dictionary<string, List<T>>> firstLevelPair in _firstLevelDictionary)
             {
-                foreach (KeyValuePair<string, List<string>> secondLevelPair in firstLevelPair.Value)
+                foreach (KeyValuePair<string, List<T>> secondLevelPair in firstLevelPair.Value)
                 {
-                    foreach (string item in secondLevelPair.Value)
+                    foreach (T item in secondLevelPair.Value)
                     {
-                        yield return new Entry(firstLevelPair.Key, secondLevelPair.Key, item);
+                        yield return new Entry<T>(firstLevelPair.Key, secondLevelPair.Key, item);
                     }
                 }
             }
@@ -88,6 +88,11 @@ namespace ScanCommon.A11yTestComparison
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
+        }
+
+        IEnumerator<A11yTestComparison.TwoLevelDictionaryToListOfThings<T>.Entry<T>> IEnumerable<A11yTestComparison.TwoLevelDictionaryToListOfThings<T>.Entry<T>>.GetEnumerator()
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

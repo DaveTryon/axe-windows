@@ -12,7 +12,7 @@ namespace ScanAnalyzer
         {
             string lastRuntimeId = string.Empty;
 
-            foreach(TwoLevelDictionaryToListOfThings.Entry entry in errorAggregator.GetEntriesIndexedByRuntimeId())
+            foreach(TwoLevelDictionaryToListOfThings<string>.Entry<string> entry in errorAggregator.GetEntriesIndexedByRuntimeId())
             {
                 if (entry.FirstLevelKey != lastRuntimeId)
                 {
@@ -22,7 +22,7 @@ namespace ScanAnalyzer
             }
         }
 
-        private static void CreateSingleTargetedA11yTestFile(TwoLevelDictionaryToListOfThings.Entry entry, IOptions options)
+        private static void CreateSingleTargetedA11yTestFile(TwoLevelDictionaryToListOfThings<string>.Entry<string> entry, IOptions options)
         {
 
         }

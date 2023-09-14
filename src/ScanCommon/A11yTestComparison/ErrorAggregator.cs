@@ -16,8 +16,8 @@ namespace ScanCommon.A11yTestComparison
     /// </summary>
     public class ErrorAggregator
     {
-        private readonly TwoLevelDictionaryToListOfThings _indexedByDescriptionFirst = new TwoLevelDictionaryToListOfThings();
-        private readonly TwoLevelDictionaryToListOfThings _indexedByRuntimeIdFirst = new TwoLevelDictionaryToListOfThings();
+        private readonly TwoLevelDictionaryToListOfThings<string> _indexedByDescriptionFirst = new TwoLevelDictionaryToListOfThings<string>();
+        private readonly TwoLevelDictionaryToListOfThings<string> _indexedByRuntimeIdFirst = new TwoLevelDictionaryToListOfThings<string>();
 
         public static ErrorAggregator CreateFromStream(Stream elementStream, string a11yTestFile)
         {
@@ -59,7 +59,7 @@ namespace ScanCommon.A11yTestComparison
             string lastSecondLevelKey = string.Empty;
 
             Console.WriteLine("Contents by Rule Description");
-            foreach (TwoLevelDictionaryToListOfThings.Entry entry in _indexedByDescriptionFirst)
+            foreach (TwoLevelDictionaryToListOfThings<string>.Entry<string> entry in _indexedByDescriptionFirst)
             {
                 if (entry.FirstLevelKey != lastFirstLevelKey)
                 {
@@ -84,7 +84,7 @@ namespace ScanCommon.A11yTestComparison
             string lastSecondLevelKey = string.Empty;
 
             Console.WriteLine("Contents by Runtime ID");
-            foreach (TwoLevelDictionaryToListOfThings.Entry entry in _indexedByRuntimeIdFirst)
+            foreach (TwoLevelDictionaryToListOfThings<string>.Entry<string> entry in _indexedByRuntimeIdFirst)
             {
                 if (entry.FirstLevelKey != lastFirstLevelKey)
                 {
@@ -103,9 +103,9 @@ namespace ScanCommon.A11yTestComparison
             }
         }
 
-        public IEnumerable<TwoLevelDictionaryToListOfThings.Entry> GetEntriesIndexedByRuntimeId()
+        public IEnumerable<TwoLevelDictionaryToListOfThings<string>.Entry<string>> GetEntriesIndexedByRuntimeId()
         {
-            foreach (TwoLevelDictionaryToListOfThings.Entry entry in _indexedByRuntimeIdFirst)
+            foreach (TwoLevelDictionaryToListOfThings<string>.Entry<string> entry in _indexedByRuntimeIdFirst)
             {
                 yield return entry;
             }
