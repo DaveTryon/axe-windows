@@ -51,7 +51,7 @@ namespace ScanAnalyzer
             CreateCleanOutputDirectoryIfNeeded(options);
             FileCollection collection = FileCollection.Create(options.InputDirectory);
             A11yTestFileContent? previousFileContent = null;
-            ErrorDictionary aggregateErrors = new ErrorDictionary();
+            ErrorAggregator errorAggregator = new ErrorAggregator();
 
             foreach (SummaryData summaryData in collection.SummaryDataList)
             {
@@ -89,16 +89,19 @@ namespace ScanAnalyzer
                         File.Copy(summaryData.A11yTestFile, Path.Join(options.OutputDirectory, a11yTestFileName));
                     }
                     OptionallyLetUserViewTestFile(options, summaryData);
-                    aggregateErrors.Merge(currentFileContent.ErrorDictionary);
+                    errorAggregator.Merge(currentFileContent.ErrorAggregator);
                     previousFileContent = currentFileContent;
                 }
             }
 
             if (!string.IsNullOrWhiteSpace(options.OutputDirectory))
             {
-                aggregateErrors.UpdatePaths(options.OutputDirectory);
+                //aggregateErrors.UpdatePaths(options.OutputDirectory);
             }
-            aggregateErrors.DumpContents();
+
+            errorAggregator.WriteSummaryByRuleDescription();
+            errorAggregator.WriteSummaryByRuntimeId();
+            TargetedA11yTestGenerator.GenerateTargetedA11yTestFiles(errorAggregator, options);
         }
 
         private static void OptionallyLetUserViewTestFile(IOptions options, SummaryData summaryData)

@@ -31,11 +31,7 @@ namespace ScanAnalyzer
 
             foreach (string file in fileList)
             {
-                SummaryData? summaryData = SummaryFile.ReadSummaryFile(dataDirectory, file);
-                if (summaryData == null)
-                {
-                    throw new Exception($"Malformed summary file: {file}");
-                }
+                SummaryData? summaryData = SummaryFile.ReadSummaryFile(dataDirectory, file) ?? throw new Exception($"Malformed summary file: {file}");
                 summaryDataList.Add(summaryData);
             }
 
