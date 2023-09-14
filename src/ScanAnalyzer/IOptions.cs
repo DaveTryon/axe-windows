@@ -7,7 +7,6 @@ namespace ScanAnalyzer
     {
         string InputDirectory { get; }
         string OutputDirectory { get; }
-        bool Interactive { get; }
         bool OverwriteOutputDirectory { get; }
     }
 }

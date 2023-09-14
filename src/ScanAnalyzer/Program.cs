@@ -6,15 +6,12 @@ using CommandLine.Text;
 using ScanCommon;
 using ScanCommon.A11yTestComparison;
 using System;
-using System.Diagnostics;
 using System.IO;
 
 namespace ScanAnalyzer
 {
     internal class Program
     {
-        const int PROCESS_ERROR = -1;
-
         static void Main(string[] args)
         {
             Exception? caughtException = null;
@@ -84,55 +81,14 @@ namespace ScanAnalyzer
                     string suffix = summaryData.ErrorCount == 0 ? string.Empty : $" ({summaryData.ErrorCount} errors found)";
                     Console.WriteLine($"{a11yTestFileName} {inclusionReasion}.{suffix}");
 
-                    if (summaryData.ErrorCount > 0 && !string.IsNullOrWhiteSpace(options.OutputDirectory))
-                    {
-                        File.Copy(summaryData.A11yTestFile, Path.Join(options.OutputDirectory, a11yTestFileName));
-                    }
-                    OptionallyLetUserViewTestFile(options, summaryData);
                     errorAggregator.Merge(currentFileContent.ErrorAggregator);
                     previousFileContent = currentFileContent;
                 }
             }
 
-            if (!string.IsNullOrWhiteSpace(options.OutputDirectory))
-            {
-                //aggregateErrors.UpdatePaths(options.OutputDirectory);
-            }
-
             errorAggregator.WriteSummaryByRuleDescription();
             errorAggregator.WriteSummaryByRuntimeId();
             TargetedA11yTestGenerator.GenerateTargetedA11yTestFiles(errorAggregator, options);
-        }
-
-        private static void OptionallyLetUserViewTestFile(IOptions options, SummaryData summaryData)
-        {
-            if (options.Interactive && summaryData.ErrorCount > 0)
-            {
-                int processId = OpenFileInAccessibilityInsights(summaryData.A11yTestFile);
-                if (processId == PROCESS_ERROR)
-                {
-                    Console.WriteLine($"Unable to open {summaryData.A11yTestFile} in Accessibility Insights. Please open it manually.");
-                }
-                else
-                {
-                    Process process = Process.GetProcessById(processId);
-                    process.WaitForExit();
-                }
-            }
-        }
-
-        private static int OpenFileInAccessibilityInsights(string a11yTestFile)
-        {
-            string x86Path = Environment.GetFolderPath(System.Environment.SpecialFolder.ProgramFilesX86);
-            ProcessStartInfo startInfo = new ProcessStartInfo
-            {
-                FileName = Path.Join(x86Path, "AccessibilityInsights", "1.1", "AccessibilityInsights.exe"),
-                Arguments = $"\"{a11yTestFile}\"",
-                UseShellExecute = true
-            };
-
-            Process? process = Process.Start(startInfo);
-            return process == null ? PROCESS_ERROR : process.Id;
         }
 
         static void CreateCleanOutputDirectoryIfNeeded(IOptions options)

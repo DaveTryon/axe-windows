@@ -10,13 +10,10 @@ namespace ScanAnalyzer
         [Option(Required = true, HelpText = "The input directory for AutoScan results")]
         public string InputDirectory { get; set; } = string.Empty;
 
-        [Option(Required = false, HelpText = "The output directory for filtered a11ytest files with errors")]
+        [Option(Required = true, HelpText = "The output directory for a11ytest files showing the highlighted items")]
         public string OutputDirectory { get; set; } = string.Empty;
 
         [Option(Required = false, HelpText = "If specified, delete the existing output directory")]
         public bool OverwriteOutputDirectory { get; set; }
-
-        [Option(Required = false, HelpText = "Open files with errors as they are found")]
-        public bool Interactive { get; set; }
     }
 }
