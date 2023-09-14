@@ -42,7 +42,7 @@ namespace ScanAnalyzer
 
             if (caughtException != null)
             {
-                Console.WriteLine($"Error: {caughtException.Message}");
+                Console.WriteLine($"Error: {caughtException}");
             }
         }
 
@@ -51,6 +51,8 @@ namespace ScanAnalyzer
             CreateCleanOutputDirectoryIfNeeded(options);
             FileCollection collection = FileCollection.Create(options.InputDirectory);
             A11yTestFileContent? previousFileContent = null;
+            ErrorDictionary aggregateErrors = new ErrorDictionary();
+
             foreach (SummaryData summaryData in collection.SummaryDataList)
             {
                 string a11yTestFile = summaryData.A11yTestFile;
@@ -87,9 +89,16 @@ namespace ScanAnalyzer
                         File.Copy(summaryData.A11yTestFile, Path.Join(options.OutputDirectory, a11yTestFileName));
                     }
                     OptionallyLetUserViewTestFile(options, summaryData);
+                    aggregateErrors.Merge(currentFileContent.ErrorDictionary);
                     previousFileContent = currentFileContent;
                 }
             }
+
+            if (!string.IsNullOrWhiteSpace(options.OutputDirectory))
+            {
+                aggregateErrors.UpdatePaths(options.OutputDirectory);
+            }
+            aggregateErrors.DumpContents();
         }
 
         private static void OptionallyLetUserViewTestFile(IOptions options, SummaryData summaryData)

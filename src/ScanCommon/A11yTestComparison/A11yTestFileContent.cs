@@ -12,10 +12,12 @@ namespace ScanCommon.A11yTestComparison
     {
         public string ElementTree { get; }
         public string Screenshot { get; }
+        public ErrorDictionary ErrorDictionary { get; }
 
-        public A11yTestFileContent(string elementTree, string screenshot)
+        public A11yTestFileContent(string elementTree, ErrorDictionary errorDictionary, string screenshot)
         {
             ElementTree = elementTree;
+            ErrorDictionary = errorDictionary;
             Screenshot = screenshot;
         }
 
@@ -43,11 +45,20 @@ namespace ScanCommon.A11yTestComparison
             {
                 string elementTree;
                 string screenshot;
+                ErrorDictionary errorDictionary;
                 var parts = package.GetParts();
                 using (Stream elementsPart = (from p in parts where p.Uri.OriginalString == "/el.snapshot" select p.GetStream()).First())
-                using (StreamReader reader = new StreamReader(elementsPart))
+                using (BinaryReader reader = new BinaryReader(elementsPart))
                 {
-                    elementTree = reader.ReadToEnd();
+                    byte[] elementsData = reader.ReadBytes((int)elementsPart.Length);
+
+                    using (MemoryStream memoryStream = new MemoryStream(elementsData))
+                    using (StreamReader textReader = new StreamReader(memoryStream))
+                    {
+                        elementTree = textReader.ReadToEnd();
+                        memoryStream.Seek(0, SeekOrigin.Begin);
+                        errorDictionary = ErrorDictionary.CreateFromStream(memoryStream, a11yTestFile);
+                    }
                 }
 
                 using (Stream screenshotPart = (from p in parts where p.Uri.OriginalString == "/scshot.png" select p.GetStream()).First())
@@ -57,7 +68,7 @@ namespace ScanCommon.A11yTestComparison
                     screenshot = Convert.ToBase64String(screenshotArray);
                 }
 
-                return new A11yTestFileContent(elementTree, screenshot);
+                return new A11yTestFileContent(elementTree, errorDictionary, screenshot);
             }
         }
     }
