@@ -8,5 +8,6 @@ namespace ScanAnalyzer
         string InputDirectory { get; }
         string OutputDirectory { get; }
         bool OverwriteOutputDirectory { get; }
+        bool VerboseMode { get; }
     }
 }

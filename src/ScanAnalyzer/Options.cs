@@ -15,5 +15,8 @@ namespace ScanAnalyzer
 
         [Option(Required = false, HelpText = "If specified, delete the existing output directory")]
         public bool OverwriteOutputDirectory { get; set; }
+
+        [Option(Required = false, HelpText = "If specified, runs in verbose mode")]
+        public bool VerboseMode { get; set; }
     }
 }

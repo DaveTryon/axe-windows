@@ -111,7 +111,7 @@ namespace ScanCommon.A11yTestComparison
                 using (StreamReader reader = new StreamReader(metadataPart))
                 {
                     string jsonMeta = reader.ReadToEnd();
-                    SnapshotMetaInfo metaInfo = JsonConvert.DeserializeObject<SnapshotMetaInfo>(jsonMeta);
+                    SnapshotMetaInfo? metaInfo = JsonConvert.DeserializeObject<SnapshotMetaInfo>(jsonMeta);
                     metaInfo.Mode = A11yFileMode.Inspect;
                     metaInfo.SelectedItems = new List<int> { selectedId };
                     jsonMeta = JsonConvert.SerializeObject(metaInfo, Formatting.Indented);
