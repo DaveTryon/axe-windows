@@ -2,7 +2,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using ScanCommon.A11yTestComparison;
-using System;
 
 namespace ScanAnalyzer
 {
@@ -12,7 +11,7 @@ namespace ScanAnalyzer
         {
             string lastRuntimeId = string.Empty;
 
-            foreach(TwoLevelDictionaryToListOfThings<string>.Entry<string> entry in errorAggregator.GetEntriesIndexedByRuntimeId())
+            foreach(ListEntry<string> entry in errorAggregator.GetEntriesIndexedByRuntimeId())
             {
                 if (entry.FirstLevelKey != lastRuntimeId)
                 {
@@ -22,9 +21,9 @@ namespace ScanAnalyzer
             }
         }
 
-        private static void CreateSingleTargetedA11yTestFile(TwoLevelDictionaryToListOfThings<string>.Entry<string> entry, IOptions options)
+        private static void CreateSingleTargetedA11yTestFile(ListEntry<string> entry, IOptions options)
         {
-
+            // TODO
         }
     }
 }

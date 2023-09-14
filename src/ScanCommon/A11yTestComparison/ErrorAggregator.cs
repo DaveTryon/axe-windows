@@ -16,8 +16,8 @@ namespace ScanCommon.A11yTestComparison
     /// </summary>
     public class ErrorAggregator
     {
-        private readonly TwoLevelDictionaryToListOfThings<string> _indexedByDescriptionFirst = new TwoLevelDictionaryToListOfThings<string>();
-        private readonly TwoLevelDictionaryToListOfThings<string> _indexedByRuntimeIdFirst = new TwoLevelDictionaryToListOfThings<string>();
+        private readonly TwoLevelDictionaryToListOfEntries<string> _indexedByDescriptionFirst = new TwoLevelDictionaryToListOfEntries<string>();
+        private readonly TwoLevelDictionaryToListOfEntries<string> _indexedByRuntimeIdFirst = new TwoLevelDictionaryToListOfEntries<string>();
 
         public static ErrorAggregator CreateFromStream(Stream elementStream, string a11yTestFile)
         {
@@ -59,7 +59,7 @@ namespace ScanCommon.A11yTestComparison
             string lastSecondLevelKey = string.Empty;
 
             Console.WriteLine("Contents by Rule Description");
-            foreach (TwoLevelDictionaryToListOfThings<string>.Entry<string> entry in _indexedByDescriptionFirst)
+            foreach (ListEntry<string> entry in _indexedByDescriptionFirst)
             {
                 if (entry.FirstLevelKey != lastFirstLevelKey)
                 {
@@ -74,7 +74,7 @@ namespace ScanCommon.A11yTestComparison
                     lastSecondLevelKey = entry.SecondLevelKey;
                 }
 
-                Console.WriteLine($"      {entry.Item}");
+                Console.WriteLine($"      {entry.Entry}");
             }
         }
 
@@ -84,7 +84,7 @@ namespace ScanCommon.A11yTestComparison
             string lastSecondLevelKey = string.Empty;
 
             Console.WriteLine("Contents by Runtime ID");
-            foreach (TwoLevelDictionaryToListOfThings<string>.Entry<string> entry in _indexedByRuntimeIdFirst)
+            foreach (ListEntry<string> entry in _indexedByRuntimeIdFirst)
             {
                 if (entry.FirstLevelKey != lastFirstLevelKey)
                 {
@@ -99,13 +99,13 @@ namespace ScanCommon.A11yTestComparison
                     lastSecondLevelKey = entry.SecondLevelKey;
                 }
 
-                Console.WriteLine($"      {entry.Item}");
+                Console.WriteLine($"      {entry.Entry}");
             }
         }
 
-        public IEnumerable<TwoLevelDictionaryToListOfThings<string>.Entry<string>> GetEntriesIndexedByRuntimeId()
+        public IEnumerable<ListEntry<string>> GetEntriesIndexedByRuntimeId()
         {
-            foreach (TwoLevelDictionaryToListOfThings<string>.Entry<string> entry in _indexedByRuntimeIdFirst)
+            foreach (ListEntry<string> entry in _indexedByRuntimeIdFirst)
             {
                 yield return entry;
             }
