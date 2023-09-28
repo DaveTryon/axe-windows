@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace ScanCommon.A11yTestComparison
+namespace ScanAnalyzer.A11yTestComparison
 {
     /// <summary>
     /// Class to help with error aggregation. It tracks failures in two lists:
@@ -18,6 +18,8 @@ namespace ScanCommon.A11yTestComparison
     {
         private readonly TwoLevelDictionaryToListOfEntries<FileNameAndUniqueId> _indexedByDescriptionFirst = new TwoLevelDictionaryToListOfEntries<FileNameAndUniqueId>();
         private readonly TwoLevelDictionaryToListOfEntries<FileNameAndUniqueId> _indexedByRuntimeIdFirst = new TwoLevelDictionaryToListOfEntries<FileNameAndUniqueId>();
+
+        public int ErrorCount { get; private set; }
 
         public static ErrorAggregator CreateFromStream(Stream elementStream, string a11yTestFile)
         {
@@ -49,6 +51,7 @@ namespace ScanCommon.A11yTestComparison
                         FileNameAndUniqueId fileNameAndUniqueId = new FileNameAndUniqueId(a11yTestFile, element.UniqueId);
                         _indexedByDescriptionFirst.AddError(ruleResult.Description, element.RuntimeId, fileNameAndUniqueId);
                         _indexedByRuntimeIdFirst.AddError(element.RuntimeId, ruleResult.Description, fileNameAndUniqueId);
+                        ErrorCount++;
                     }
                 }
             }

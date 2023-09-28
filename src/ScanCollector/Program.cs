@@ -93,27 +93,20 @@ namespace ScanCollector
                 string scanId = DateTime.Now.Ticks.ToString(CultureInfo.InvariantCulture);
 
                 Console.WriteLine($"Starting scan of {processId} with id of {scanId}.");
-                FireAndForgetScan(scanner, scanId, options);
+                FireAndForgetScan(scanner, scanId);
                 Thread.Sleep(TimeSpan.FromMilliseconds(options.MillisecondsBetweenScans));
             }
 
             Console.WriteLine($"{processId} has exited. Shutting down.");
         }
 
-        static async void FireAndForgetScan(IScanner scanner, string scanId, IOptions options)
+        static async void FireAndForgetScan(IScanner scanner, string scanId)
         {
             try
             {
                 ScanOptions scanOptions = new ScanOptions(scanId: scanId);
                 ScanOutput scanOutput = await scanner.ScanAsync(scanOptions, CancellationToken.None);
                 WindowScanOutput output = scanOutput.WindowScanOutputs.First();
-                SummaryData summaryData = new SummaryData
-                {
-                    ScanId = scanId,
-                    A11yTestFile = Path.GetFullPath(output.OutputFile.A11yTest),
-                    ErrorCount = output.ErrorCount,
-                };
-                SummaryFile.WriteSummaryFile(options.OutputDirectory, summaryData);
             }
             catch (Exception)
             {

@@ -4,11 +4,10 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace ScanCommon.A11yTestComparison
+namespace ScanAnalyzer.A11yTestComparison
 {
     public partial class TwoLevelDictionaryToListOfEntries<T> : IEnumerable<ListEntry<T>>
     {
-
         private readonly Dictionary<string, Dictionary<string, List<T>>> _firstLevelDictionary = new Dictionary<string, Dictionary<string, List<T>>>();
 
         /// <summary>

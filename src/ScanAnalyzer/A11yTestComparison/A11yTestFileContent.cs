@@ -10,7 +10,7 @@ using System.IO.Packaging;
 using System.Linq;
 using System.Text;
 
-namespace ScanCommon.A11yTestComparison
+namespace ScanAnalyzer.A11yTestComparison
 {
     public class A11yTestFileContent
     {
@@ -51,7 +51,7 @@ namespace ScanCommon.A11yTestComparison
             {
                 string elementTree;
                 string screenshot;
-                ErrorAggregator errorDictionary;
+                ErrorAggregator errorAggregator;
                 PackagePartCollection parts = package.GetParts();
                 using (Stream elementsPart = (from p in parts where p.Uri.OriginalString == "/el.snapshot" select p.GetStream()).First())
                 using (BinaryReader reader = new BinaryReader(elementsPart))
@@ -63,7 +63,7 @@ namespace ScanCommon.A11yTestComparison
                     {
                         elementTree = textReader.ReadToEnd();
                         memoryStream.Seek(0, SeekOrigin.Begin);
-                        errorDictionary = ErrorAggregator.CreateFromStream(memoryStream, a11yTestFile);
+                        errorAggregator = ErrorAggregator.CreateFromStream(memoryStream, a11yTestFile);
                     }
                 }
 
@@ -74,7 +74,7 @@ namespace ScanCommon.A11yTestComparison
                     screenshot = Convert.ToBase64String(screenshotArray);
                 }
 
-                return new A11yTestFileContent(elementTree, errorDictionary, screenshot);
+                return new A11yTestFileContent(elementTree, errorAggregator, screenshot);
             }
         }
 

@@ -3,7 +3,7 @@
 
 using System;
 
-namespace ScanCommon.A11yTestComparison
+namespace ScanAnalyzer.A11yTestComparison
 {
     [Flags]
     public enum DiffFlags

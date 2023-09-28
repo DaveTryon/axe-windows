@@ -3,8 +3,8 @@
 
 using CommandLine;
 using CommandLine.Text;
+using ScanAnalyzer.A11yTestComparison;
 using ScanCommon;
-using ScanCommon.A11yTestComparison;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -54,9 +54,8 @@ namespace ScanAnalyzer
             A11yTestFileContent? previousFileContent = null;
             ErrorAggregator errorAggregator = new ErrorAggregator();
 
-            foreach (SummaryData summaryData in collection.SummaryDataList)
+            foreach (string a11yTestFile in collection.FileList)
             {
-                string a11yTestFile = summaryData.A11yTestFile;
                 string a11yTestFileName = Path.GetFileName(a11yTestFile);
                 DiffFlags diffFromPrevious = DiffFlags.Identical;
                 A11yTestFileContent currentFileContent;
@@ -64,7 +63,7 @@ namespace ScanAnalyzer
                 {
                     currentFileContent = A11yTestFileContent.Create(a11yTestFile);
                 }
-                catch (InvalidOperationException)
+                catch (Exception)
                 {
                     if (options.VerboseMode)
                     {
@@ -86,8 +85,9 @@ namespace ScanAnalyzer
                 {
                     if (options.VerboseMode)
                     {
+                        int errorCount = currentFileContent.ErrorAggregator.ErrorCount;
                         string inclusionReasion = (previousFileContent == null) ? "is the first valid file in the collection" : "differs from the previous file";
-                        string suffix = summaryData.ErrorCount == 0 ? string.Empty : $" ({summaryData.ErrorCount} errors found)";
+                        string suffix = errorCount == 0 ? string.Empty : $" ({errorCount} errors found)";
                         Console.WriteLine($"{a11yTestFileName} {inclusionReasion}.{suffix}");
                     }
 
@@ -109,7 +109,7 @@ namespace ScanAnalyzer
         static void WriteSummary(IOptions options, FileCollection collection, List<OutputFileInfo> outputFileInfos)
         {
             Console.WriteLine("Axe-Windows scanner results:");
-            Console.WriteLine($" {collection.SummaryDataList.Count} files were successfully read from {options.InputDirectory}");
+            Console.WriteLine($" {collection.FileList.Count} files were successfully read from {options.InputDirectory}");
             Console.WriteLine($" {outputFileInfos.Count} a11ytest files were written to {options.OutputDirectory}");
             Console.WriteLine($" Output file details:");
             foreach (OutputFileInfo info in outputFileInfos)

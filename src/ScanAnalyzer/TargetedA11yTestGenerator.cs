@@ -1,7 +1,8 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using ScanCommon.A11yTestComparison;
+using ScanAnalyzer.A11yTestComparison;
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -23,7 +24,15 @@ namespace ScanAnalyzer
             {
                 if (entry.FirstLevelKey != lastFirstLevelKey)
                 {
-                    lastOutputFileInfo = CreateSingleTargetedA11yTestFile(entry, options, counter++);
+                    try
+                    {
+                        lastOutputFileInfo = CreateSingleTargetedA11yTestFile(entry, options, counter++);
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine($"Skipping {entry.Entry.FileName} due to error when processing it. Message = {e.Message}");
+                        continue;
+                    }
                     outputFileInfos.Add(lastOutputFileInfo);
                     lastFirstLevelKey = entry.FirstLevelKey;
                     lastSecondLevelKey = entry.SecondLevelKey;
