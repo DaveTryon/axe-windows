@@ -21,7 +21,7 @@ namespace ScanAnalyzer
             List<string> fileList = new List<string>();
             foreach (string file in Directory.EnumerateFiles(dataDirectory, "*.a11ytest"))
             {
-                fileList.Add(file);
+                fileList.Add(Path.Combine(dataDirectory, file));
             }
 
             fileList.Sort(StringComparer.OrdinalIgnoreCase);

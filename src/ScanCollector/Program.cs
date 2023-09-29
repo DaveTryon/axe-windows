@@ -48,7 +48,13 @@ namespace ScanCollector
             }
         }
 
-        static void RunWithParsedInputs(IOptions options)
+        static void RunWithParsedInputs(Options options)
+        {
+            options.NormalizeInputs();
+            RunWithNormalizedInputs(options);
+        }
+
+        static void RunWithNormalizedInputs(IOptions options)
         {
             if (IsProcessRunning(options.ProcessName))
                 throw new ArgumentException($"{options.ProcessName} is already running. Please close the process and try again.");

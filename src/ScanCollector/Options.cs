@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using CommandLine;
+using System.IO;
 
 namespace ScanCollector
 {
@@ -18,5 +19,10 @@ namespace ScanCollector
 
         [Option(Required = false, HelpText = "If specified, delete the existing output directory")]
         public bool OverwriteOutputDirectory { get; set; }
+
+        public void NormalizeInputs()
+        {
+            OutputDirectory = Path.GetFullPath(OutputDirectory);
+        }
     }
 }

@@ -44,7 +44,13 @@ namespace ScanAnalyzer
             }
         }
 
-        static void RunWithParsedInputs(IOptions options)
+        static void RunWithParsedInputs(Options options)
+        {
+            options.NormalizeInputs();
+            RunWithNormalizedInputs(options);
+        }
+
+        static void RunWithNormalizedInputs(IOptions options)
         {
             Console.WriteLine($"Reading files from {options.InputDirectory}");
             Console.WriteLine($"Writing files to {options.OutputDirectory}");

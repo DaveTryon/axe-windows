@@ -18,5 +18,11 @@ namespace ScanAnalyzer
 
         [Option(Required = false, HelpText = "If specified, runs in verbose mode")]
         public bool VerboseMode { get; set; }
+
+        public void NormalizeInputs()
+        {
+            InputDirectory = System.IO.Path.GetFullPath(InputDirectory);
+            OutputDirectory = System.IO.Path.GetFullPath(OutputDirectory);
+        }
     }
 }
