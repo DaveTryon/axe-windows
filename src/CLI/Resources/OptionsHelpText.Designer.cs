@@ -61,6 +61,15 @@ namespace AxeWindowsCLI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to If specified, always save the test file. By default, the test file is saved only if errors are found..
+        /// </summary>
+        public static string AlwaysSaveTestFile {
+            get {
+                return ResourceManager.GetString("AlwaysSaveTestFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The path to a configuration file specifying custom UI Automation attributes.
         /// </summary>
         public static string CustomUia {
@@ -120,6 +129,15 @@ namespace AxeWindowsCLI.Resources {
         public static string ShowThirdPartyNotices {
             get {
                 return ResourceManager.GetString("ShowThirdPartyNotices", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If specified, causes Chromium HTML content to be scanned. Chromium HTML content is ignored without this flag. This is intended primarily for browser development teams and is discouraged for other scenarios..
+        /// </summary>
+        public static string TestAllChromiumContent {
+            get {
+                return ResourceManager.GetString("TestAllChromiumContent", resourceCulture);
             }
         }
         

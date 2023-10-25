@@ -12,5 +12,7 @@ namespace AxeWindowsCLI
         VerbosityLevel VerbosityLevel { get; }
         int DelayInSeconds { get; }
         string CustomUia { get; }
+        bool AlwaysSaveTestFile { get; }
+        bool TestAllChromiumContent { get; }
     }
 }

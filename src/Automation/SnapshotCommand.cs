@@ -97,6 +97,7 @@ namespace Axe.Windows.Automation
             var dpiAwarenessObject = scanTools.DpiAwareness.Enable();
             try
             {
+                scanTools.Actions.SetShouldTestAllChromiumContent(config.TestAllChromiumContent);
                 resultList.Add(scanTools.Actions.Scan(rootElement, (element, elementId) =>
                 {
                     return ProcessResults(element, elementId, config, scanTools, multipleTopLevelWindowsExist, targetIndex, rootElements.Count(), actionContext);
@@ -126,7 +127,7 @@ namespace Axe.Windows.Automation
                 }
                 else
                 {
-                    if (results.ErrorCount > 0)
+                    if (results.ErrorCount > 0 || config.AlwaysSaveTestFile)
                     {
                         results.OutputFile = WriteOutputFiles(config.OutputFileFormat, scanTools, element, elementId, null, actionContext);
                     }

@@ -25,6 +25,12 @@ namespace AxeWindowsCLI
             if (!string.IsNullOrEmpty(options.OutputDirectory))
                 builder = builder.WithOutputDirectory(options.OutputDirectory);
 
+            if (options.AlwaysSaveTestFile)
+                builder = builder.WithAlwaysSaveTestFile();
+
+            if (options.TestAllChromiumContent)
+                builder = builder.WithTestAllChromiumContent();
+
             return ScannerFactory.CreateScanner(builder.Build());
         }
     }

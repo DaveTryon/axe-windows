@@ -92,6 +92,22 @@ path | `string` | The path to the configuration file.
 
 The `WithCustomUIAConfig` method returns the  `Config.Builder` configured with the specified custom UIA configuration file.
 
+##### `WithAlwaysSaveTestFile`
+
+Cause each scan to save a test file, even if no errors are reported. The default is to save a test file only is errors are found.
+
+###### Return object
+
+The `WithAlwaysSaveTestFile` method returns the  `Config.Builder` configured to always save a test file.
+
+##### `WithTestAllChromiumContent`
+
+Cause all Chromium HTML content to be included in scan results. The default is to omit Chromium HTML content from the scan results. This is intended only for use by browser development teams and should be omitted in other scenarios.
+
+###### Return object
+
+The `WithTestAllChromiumContent` method returns the  `Config.Builder` configured to include all Chromium HTML content in the scan results..
+
 ##### Build
 
 Build an instance of `Config`.

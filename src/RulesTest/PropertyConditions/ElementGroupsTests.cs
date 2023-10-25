@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using Axe.Windows.Rules;
 using Axe.Windows.Rules.PropertyConditions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
@@ -398,6 +399,72 @@ namespace Axe.Windows.RulesTests.PropertyConditions
                 e.Framework = "WinForm";
                 Assert.IsTrue(ElementGroups.WinFormsEdit.Matches(e));
             } // using
+        }
+
+        [TestMethod]
+        public void IsChromiumDocument_MatchExpected()
+        {
+            using (var e = new MockA11yElement())
+            {
+                Assert.IsFalse(ElementGroups.IsChromiumDocument.Matches(e));
+
+                e.Framework = "Chrome";
+                Assert.IsFalse(ElementGroups.IsChromiumDocument.Matches(e));
+
+                e.ControlTypeId = Document;
+                Assert.IsTrue(ElementGroups.IsChromiumDocument.Matches(e));
+            } // using
+        }
+
+        [TestMethod]
+        public void IsChromiumContent_MatchExpected()
+        {
+            using (var e = new MockA11yElement())
+            using (var p1 = new MockA11yElement())
+            using (var p2 = new MockA11yElement())
+            {
+                e.Parent = p1;
+                p1.Parent = p2;
+
+                // No Chromium Documents in ancestry
+                Assert.IsFalse(ElementGroups.IsChromiumContent.Matches(e));
+
+                // Grandparent is Chromium Document
+                p2.Framework = "Chrome";
+                p2.ControlTypeId = Document;
+                Assert.IsTrue(ElementGroups.IsChromiumContent.Matches(e));
+
+                // Parent is Chromium Document
+                p1.Framework = "Chrome";
+                p1.ControlTypeId = Document;
+                p1.Parent = null;
+                Assert.IsTrue(ElementGroups.IsChromiumContent.Matches(e));
+
+                // Self is Chromium Document
+                e.Framework = "Chrome";
+                e.ControlTypeId = Document;
+                e.Parent = null;
+                Assert.IsTrue(ElementGroups.IsChromiumContent.Matches(e));
+            } // using
+
+            Assert.AreEqual("IsChromiumContent", ElementGroups.IsChromiumContent.ToString());
+        }
+
+        [TestMethod]
+        public void TestAllChromiumContent_MatchExpected()
+        {
+            Assert.IsFalse(RulesSettings.ShouldTestAllChromiumContent);
+
+            using (var e = new MockA11yElement())
+            {
+                RulesSettings.ShouldTestAllChromiumContent = false;
+                Assert.IsFalse(ElementGroups.ShouldTestAllChromiumContent.Matches(e));
+
+                RulesSettings.ShouldTestAllChromiumContent = true;
+                Assert.IsTrue(ElementGroups.ShouldTestAllChromiumContent.Matches(e));
+            } // using
+
+            RulesSettings.ShouldTestAllChromiumContent = false;
         }
     } // class
 } // namespace
