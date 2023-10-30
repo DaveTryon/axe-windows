@@ -139,7 +139,8 @@ namespace Axe.Windows.Desktop.UIAutomation.EventHandlers
                 }
             }
 
-            _autoEventFinish.Set();
+            // Guard against early disposal due to a race condition.
+            _autoEventFinish?.Set();
 
         }
 
