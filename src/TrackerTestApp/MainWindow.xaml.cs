@@ -65,7 +65,7 @@ namespace TrackerTestApp
 
             lock (_lockObject)
             {
-                DesktopElementAncestry anc = new DesktopElementAncestry(Axe.Windows.Core.Enums.TreeViewMode.Control, element, true);
+                DesktopElementAncestry anc = new DesktopElementAncestry(Axe.Windows.Core.Enums.TreeViewMode.Raw, element, true);
 
                 DesktopElement? de = element as DesktopElement;
 
