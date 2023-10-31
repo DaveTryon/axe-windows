@@ -91,7 +91,7 @@ namespace TrackerTestApp
                     lines.Add($"{indentString}parent name = {i.Name}");
                     lines.Add($"{indentString}parent Automation ID = {i.AutomationId}");
                     lines.Add($"{indentString}parent Runtime ID = {i.RuntimeId}");
-                    rc = de.BoundingRectangle;
+                    rc = i.BoundingRectangle;
                     lines.Add($"{indentString}parent bounding rectangle = {rc.Left}, {rc.Top}, {rc.Right}, {rc.Bottom}");
                     indent += 2;
                 }
